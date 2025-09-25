@@ -1,0 +1,95 @@
+﻿@model IEnumerable<VideoFile>
+
+@{
+    Layout = null;
+    bool hasVideos = Model != null && Model.Any();
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Video Upload App</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body class="bg-light">
+
+    <div class="container py-4">
+        <h1 class="mb-4 text-center">🎬 Video Upload & Catalogue</h1>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-left mb-4 gap-2">
+            <button id="showUpload" class="btn btn-primary">Upload</button>
+            <button id="showCatalogue" class="btn btn-secondary">Catalogue</button>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="mb-4" id="uploadSection" style="display:none">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Upload Video(s)</h4>
+                    <input type="file" id="fileInput" class="form-control mb-3"
+                           multiple accept=".mp4" />
+                    <button id="uploadBtn" class="btn btn-primary w-100">Upload</button>
+                    <p id="uploadStatus" class="text-danger mt-2"></p>
+                </div>
+            </div>
+        </div>
+        <!-- Catalogue Section -->
+        <div class="mb-4" id="catalogueSection">
+            @if (hasVideos)
+            {
+                <div class="cataloguePlaceholder">Select a video to start playback.</div>
+            }
+            else
+            {
+                <div class="cataloguePlaceholder">No videos uploaded yet. Please upload one to get started.</div>
+            }
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Video Catalogue</h4>
+                    <!-- Video Player -->
+                            <video id="videoPlayer"
+                                   class="w-100 rounded shadow-sm"
+                                   controls style="display:none"></video>
+
+                    @if (hasVideos)
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Filename</th>
+                                        <th>Size (KB)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var video in Model)
+                                    {
+                                        <tr data-video="@video.RelativePath" class="cursor-pointer">
+                                            <td>@video.FileName</td>
+                                            <td>@(video.FileSize / 1024)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js"></script>
+</body>
+</html>
